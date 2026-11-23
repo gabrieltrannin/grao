@@ -1,0 +1,80 @@
+name: Gerar APK do Grão
+
+# Roda quando você envia um novo grao-projeto.zip (ou altera o código direto no repositório),
+# e também pelo botão "Run workflow" na aba Actions.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Abrir o projeto (zip enviado pelo celular)
+        run: |
+          if [ -f grao-projeto.zip ]; then
+            mkdir src && unzip -q grao-projeto.zip -d src
+            # o zip tem uma pasta grao-android/ dentro
+            echo "PROJ=src/grao-android" >> $GITHUB_ENV
+          else
+            echo "PROJ=." >> $GITHUB_ENV
+          fi
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Preparar a chave de assinatura
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+        run: |
+          if [ -z "$KEYSTORE_BASE64" ]; then
+            echo "::error::Falta o segredo KEYSTORE_BASE64 (veja o LEIA-ME)."; exit 1
+          fi
+          echo "$KEYSTORE_BASE64" | base64 -d > "$PROJ/app/grao.jks"
+
+      - name: Compilar
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+        run: |
+          cd "$PROJ"
+          chmod +x gradlew
+          ./gradlew assembleRelease --no-daemon \
+            -PversionCode=${{ github.run_number }} \
+            -PversionName=1.0.${{ github.run_number }} \
+            -PupdateUrl=https://github.com/${{ github.repository }}/releases/latest/download/versao.json
+
+      - name: Montar a versão
+        env:
+          MSG: ${{ github.event.head_commit.message }}
+        run: |
+          V=1.0.${{ github.run_number }}
+          mkdir out
+          cp "$PROJ/app/build/outputs/apk/release/app-release.apk" "out/grao-$V.apk"
+          NOTES="${MSG:-Melhorias e correções}"
+          jq -n --argjson code ${{ github.run_number }} --arg name "$V" \
+            --arg url "https://github.com/${{ github.repository }}/releases/download/v$V/grao-$V.apk" \
+            --arg notes "$NOTES" \
+            '{versionCode:$code, versionName:$name, apkUrl:$url, notes:$notes}' > out/versao.json
+          echo "V=$V" >> $GITHUB_ENV
+          echo "NOTES<<EOF" >> $GITHUB_ENV; echo "$NOTES" >> $GITHUB_ENV; echo "EOF" >> $GITHUB_ENV
+
+      - name: Publicar (o app instalado detecta esta versão)
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ env.V }}
+          name: Grão ${{ env.V }}
+          body: ${{ env.NOTES }}
+          make_latest: true
+          files: |
+            out/grao-${{ env.V }}.apk
+            out/versao.json

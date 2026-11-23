@@ -1,0 +1,53 @@
+plugins {
+    id 'com.android.application'
+}
+
+// Versão e endereço de atualização vêm do GitHub Actions (ou ficam com estes padrões no Android Studio).
+def vCode = (project.findProperty('versionCode') ?: '1').toString().toInteger()
+def vName = (project.findProperty('versionName') ?: '1.0.0').toString()
+def updUrl = (project.findProperty('updateUrl') ?: '').toString()
+def ksFile = file('grao.jks')
+def ksPass = System.getenv('KEYSTORE_PASSWORD') ?: project.findProperty('keystorePassword')
+
+android {
+    namespace 'com.grao.camera'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'com.grao.camera'
+        minSdk 26
+        targetSdk 35
+        versionCode vCode
+        versionName vName
+        buildConfigField 'String', 'UPDATE_URL', "\"${updUrl}\""
+    }
+
+    signingConfigs {
+        release {
+            if (ksFile.exists() && ksPass) {
+                storeFile ksFile
+                storePassword ksPass
+                keyAlias 'grao'
+                keyPassword ksPass
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            if (ksFile.exists() && ksPass) {
+                signingConfig signingConfigs.release
+            }
+        }
+    }
+
+    buildFeatures {
+        buildConfig true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}

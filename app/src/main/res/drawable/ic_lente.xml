@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp"
+    android:viewportWidth="108" android:viewportHeight="108">
+    <!-- anel externo -->
+    <path android:fillColor="#2D3240" android:pathData="M54,54m-26,0a26,26 0,1 1,52 0a26,26 0,1 1,-52 0" />
+    <path android:fillColor="#0B0C10" android:pathData="M54,54m-21,0a21,21 0,1 1,42 0a21,21 0,1 1,-42 0" />
+    <!-- lente laranja -->
+    <path android:fillColor="#FF8A1F" android:pathData="M54,54m-13,0a13,13 0,1 1,26 0a13,13 0,1 1,-26 0" />
+    <path android:fillColor="#3A1D08" android:pathData="M54,54m-6,0a6,6 0,1 1,12 0a6,6 0,1 1,-12 0" />
+    <!-- brilho -->
+    <path android:fillColor="#FFD8A8" android:pathData="M49,48m-3,0a3,3 0,1 1,6 0a3,3 0,1 1,-6 0" />
+    <!-- luz indicadora -->
+    <path android:fillColor="#FF8A1F" android:pathData="M76,32m-3,0a3,3 0,1 1,6 0a3,3 0,1 1,-6 0" />
+</vector>
