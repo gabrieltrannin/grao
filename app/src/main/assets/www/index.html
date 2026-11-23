@@ -112,13 +112,17 @@ input[type=range]{width:100%;height:40px;accent-color:var(--acc);margin:0}
 const $=s=>document.querySelector(s);
 const AND=window.Android||null;
 const FILMS=[
- {n:'Sol 200',iso:200,ex:.05,con:1.08,sat:1.12,temp:.35,tnt:.05,fade:.05,sh:[.55,.45,.35],hi:[.62,.55,.42],split:.35,vig:.35,grain:.35,ca:.3,bloom:.25,leak:.45,lc:[1,.45,.12],bw:0,date:1,frame:'none'},
- {n:'Verde 400',iso:400,ex:0,con:1.05,sat:1,temp:-.1,tnt:.25,fade:.06,sh:[.38,.55,.55],hi:[.58,.5,.52],split:.5,vig:.3,grain:.45,ca:.2,bloom:.15,leak:.3,lc:[1,.3,.35],bw:0,date:0,frame:'none'},
- {n:'Instante',iso:600,ex:.12,con:.86,sat:.85,temp:.15,tnt:-.05,fade:.14,sh:[.38,.52,.6],hi:[.62,.56,.42],split:.6,vig:.55,grain:.25,ca:.15,bloom:.35,leak:.35,lc:[1,.75,.4],bw:0,date:0,frame:'polaroid'},
- {n:'Noite 3200',iso:3200,ex:.05,con:1.35,sat:0,temp:0,tnt:0,fade:.04,sh:[.5,.5,.5],hi:[.5,.5,.5],split:0,vig:.6,grain:1,ca:0,bloom:.3,leak:0,lc:[1,1,1],bw:1,date:0,frame:'film'},
- {n:'CCD 2003',iso:100,ex:.15,con:1.12,sat:1.3,temp:-.25,tnt:0,fade:0,sh:[.45,.5,.58],hi:[.5,.52,.56],split:.3,vig:.15,grain:.15,ca:.8,bloom:.6,leak:.15,lc:[.6,.7,1],bw:0,date:1,frame:'none'},
- {n:'Cine 500',iso:500,ex:-.05,con:1.18,sat:.95,temp:.1,tnt:0,fade:.07,sh:[.35,.52,.58],hi:[.66,.52,.38],split:.75,vig:.45,grain:.4,ca:.35,bloom:.45,leak:.4,lc:[1,.2,.1],bw:0,date:0,frame:'film'},
- {n:'Anos 70',iso:100,ex:.08,con:.92,sat:.8,temp:.5,tnt:-.2,fade:.16,sh:[.58,.45,.5],hi:[.64,.58,.38],split:.6,vig:.5,grain:.5,ca:.25,bloom:.3,leak:.8,lc:[1,.5,.2],bw:0,date:1,frame:'polaroid'}
+ // ex exposição (negativo = mais escuro) · con curva em S · warm amarelado · tnt verde(+)/magenta(-) · fade preto lavado
+ // sh/hi cor das sombras/luzes · cross mar e céu puxando pro verde-água · roll luzes suaves · soft maciez da lente
+ // hal brilho alaranjado em volta das luzes · vig cantos escuros · grain grão · leak luz vazada
+ {n:'Praia 200',iso:200,sw:['#ffe08a','#e8a33c','#1f6f6a'],ex:-0.3,con:.55,sat:1.05,warm:.55,tnt:.05,fade:.04,sh:[.02,.01,-.03],hi:[.05,.03,-.06],cross:.5,roll:.25,soft:.25,hal:.35,hc:[1,.4,.15],vig:.45,grain:.45,ca:.2,leak:.25,lc:[1,.55,.15],bw:0,date:1,frame:'none'},
+ {n:'Pôr do Sol 400',iso:400,sw:['#ffc35c','#d9601f','#3a1a10'],ex:-0.5,con:.7,sat:1.1,warm:.9,tnt:-.03,fade:.05,sh:[.03,-.01,-.04],hi:[.08,.03,-.08],cross:.3,roll:.3,soft:.3,hal:.6,hc:[1,.35,.1],vig:.6,grain:.55,ca:.25,leak:.5,lc:[1,.35,.1],bw:0,date:0,frame:'none'},
+ {n:'Areia 160',iso:160,sw:['#fff0c8','#e9c98e','#9b7b55'],ex:-0.2,con:.35,sat:.9,warm:.6,tnt:.02,fade:.08,sh:[.03,.02,0],hi:[.05,.04,-.04],cross:.35,roll:.4,soft:.35,hal:.25,hc:[1,.5,.2],vig:.35,grain:.35,ca:.15,leak:.2,lc:[1,.6,.25],bw:0,date:0,frame:'none'},
+ {n:'Verão 98',iso:400,sw:['#f6f08a','#9fcf6a','#1d5a5a'],ex:-0.25,con:.8,sat:1.15,warm:.5,tnt:.12,fade:.03,sh:[-.01,.02,.01],hi:[.05,.05,-.07],cross:.6,roll:.2,soft:.45,hal:.3,hc:[1,.45,.2],vig:.75,grain:.8,ca:.6,leak:.35,lc:[1,.5,.2],bw:0,date:1,frame:'none'},
+ {n:'Maresia 800',iso:800,sw:['#e9d79a','#5f9a8a','#173a3a'],ex:-0.45,con:.5,sat:.85,warm:.35,tnt:.1,fade:.1,sh:[-.03,.02,.02],hi:[.06,.04,-.06],cross:.7,roll:.3,soft:.3,hal:.3,hc:[1,.45,.2],vig:.5,grain:.75,ca:.2,leak:.2,lc:[1,.5,.3],bw:0,date:0,frame:'none'},
+ {n:'Vencido 100',iso:100,sw:['#ffe0b0','#e08a8a','#6a4a6a'],ex:-0.3,con:.3,sat:.75,warm:.5,tnt:-.15,fade:.16,sh:[.04,-.02,.03],hi:[.06,.05,-.07],cross:.2,roll:.4,soft:.4,hal:.35,hc:[1,.35,.25],vig:.55,grain:.6,ca:.3,leak:.7,lc:[1,.3,.25],bw:0,date:0,frame:'polaroid'},
+ {n:'Caramelo 70',iso:100,sw:['#f2c77a','#b5762e','#4a2a12'],ex:-0.4,con:.55,sat:.7,warm:1.1,tnt:0,fade:.12,sh:[.05,.02,-.02],hi:[.07,.04,-.08],cross:.2,roll:.35,soft:.35,hal:.3,hc:[1,.45,.15],vig:.6,grain:.5,ca:.25,leak:.45,lc:[1,.45,.15],bw:0,date:1,frame:'none'},
+ {n:'Sépia 400',iso:400,sw:['#f3e2c0','#a8865a','#2e2218'],ex:-0.3,con:.7,sat:0,warm:0,tnt:0,fade:.08,sh:[0,0,0],hi:[0,0,0],cross:0,roll:.3,soft:.3,hal:.2,hc:[1,.6,.3],vig:.65,grain:.9,ca:0,leak:.15,lc:[1,.6,.3],bw:1,date:0,frame:'film'}
 ];
 const S={f:0,amt:1,grn:1,lk:1,fd:1,date:1,frame:'none',seed:1,lp:[.95,.1],hold:false,live:true,mir:false,
   facing:'environment',torch:false,timer:false,src:null,stream:null};
@@ -128,24 +132,34 @@ const gc=document.createElement('canvas');
 const gl=gc.getContext('webgl',{premultipliedAlpha:false,preserveDrawingBuffer:true});
 const VS='attribute vec2 p;varying vec2 v;void main(){v=p*.5+.5;gl_Position=vec4(p,0,1);}';
 const FS=`precision highp float;varying vec2 v;uniform sampler2D t;uniform vec2 res,lp;
-uniform float ex,con,sat,temp,tnt,fade,split,vig,grain,ca,bloom,leak,bw,seed,amt,mir;uniform vec3 sh,hi,lc;
+uniform float ex,con,sat,warm,tnt,fade,cross,roll,soft,hal,vig,grain,ca,leak,bw,seed,amt,mir;uniform vec3 sh,hi,lc,hc;
 float h(vec2 p){return fract(sin(dot(p,vec2(12.9898,78.233))+seed)*43758.5453);}
 vec3 tx(vec2 u){if(mir>.5)u.x=1.-u.x;return texture2D(t,clamp(u,0.,1.)).rgb;}
-void main(){vec2 uv=v,d=uv-.5;vec3 o=tx(uv),c;float a=ca*.006;
-c=vec3(tx(uv+d*a).r,o.g,tx(uv-d*a).b);
-vec3 b=vec3(0.);for(int i=0;i<8;i++){float an=float(i)*.785398;vec2 of=vec2(cos(an)*res.y/res.x,sin(an))*.014;b+=max(tx(uv+of)-.62,0.);}
-c+=b*.25*bloom*vec3(1.,.75,.55);
-c*=exp2(ex);c.r+=temp*.08;c.b-=temp*.08;c.g+=tnt*.05;
-float l=dot(c,vec3(.299,.587,.114));c=mix(vec3(l),c,sat);
-c=(c-.5)*con+.5;l=clamp(dot(c,vec3(.299,.587,.114)),0.,1.);
-c+=(sh-.5)*split*(1.-l)*(1.-l)*1.4+(hi-.5)*split*l*l*1.4;
-c=fade+c*(1.-fade*1.3);
+float lum(vec3 c){return dot(c,vec3(.299,.587,.114));}
+void main(){vec2 uv=v,d=uv-.5;vec2 px=vec2(1./res.x,1./res.y)*max(1.,res.x/1000.);
+vec3 o=tx(uv);float a=ca*.005;
+vec3 c=vec3(tx(uv+d*a).r,o.g,tx(uv-d*a).b);
+vec3 bl=(tx(uv+px*vec2(1.5,0.))+tx(uv-px*vec2(1.5,0.))+tx(uv+px*vec2(0.,1.5))+tx(uv-px*vec2(0.,1.5)))*.25;
+c=mix(c,bl,soft*.8);
+vec3 g=vec3(0.);for(int i=0;i<12;i++){float an=float(i)*.5236;float r=(i<6)?.008:.018;g+=max(tx(uv+vec2(cos(an)*res.y/res.x,sin(an))*r)-.82,0.);}
+g/=12.;
+c*=exp2(ex);
+float bd=max(c.b-max(c.r,c.g),0.);float l0=lum(c);c.r-=bd*cross*.7;c.g+=bd*cross*.25*(1.-l0);c.b-=bd*cross*.15*l0;
+float wb=1.-clamp(bd*4.,0.,.75);c.r+=warm*.06*wb;c.g+=warm*.026*wb;c.b-=warm*.08*wb;c.g+=tnt*.04;c.r-=tnt*.015;c.b-=tnt*.015;
+float l=lum(c);c=mix(vec3(l),c,sat*mix(.7,1.,clamp(l,0.,1.)));
+c=clamp(c,0.,1.);c=mix(c,c*c*(3.-2.*c),con);
+c=c*(1.+roll)/(1.+roll*c);
+l=lum(c);c+=sh*(1.-l)*(1.-l)*2.+hi*l*l*2.;
+c=fade*vec3(1.,.93,.82)+c*(1.-fade);
+c+=hc*g*hal*2.2;
+if(bw>.5){l=lum(c);c=vec3(l)*vec3(1.08,.96,.8)+vec3(.03,.02,0.);}
 vec2 ar=vec2(res.x/res.y,1.);float ld=distance(uv*ar,lp*ar);
-vec3 L=lc*smoothstep(1.,.0,ld)*leak*.85;if(bw>.5)L=vec3(dot(L,vec3(.33)));
+vec3 L=lc*smoothstep(1.,.0,ld)*leak*.8;if(bw>.5)L=vec3(lum(L))*vec3(1.,.9,.75);
 c=1.-(1.-clamp(c,0.,1.))*(1.-L);
-c*=1.-vig*dot(d,d)*2.;
-vec2 gp=floor(gl_FragCoord.xy/max(1.,res.x/1300.));
-c+=(h(gp)-.5)*grain*.2*(1.-abs(l-.5));
+float vg=length(d*vec2(1.,res.y/res.x)*1.15);c*=mix(1.,smoothstep(.95,.2,vg),vig);
+float gs=max(1.2,res.x/1100.);vec2 fc=gl_FragCoord.xy;
+float n=(h(floor(fc/gs))-.5)*.75+(h(floor(fc/(gs*2.3))+3.7)-.5)*.55;
+l=clamp(lum(c),0.,1.);c+=n*grain*.17*(1.-l*l*.7);
 gl_FragColor=vec4(mix(o,clamp(c,0.,1.),amt),1.);}`;
 const mk=(ty,src)=>{const s=gl.createShader(ty);gl.shaderSource(s,src);gl.compileShader(s);return s};
 const pr=gl.createProgram();gl.attachShader(pr,mk(gl.VERTEX_SHADER,VS));gl.attachShader(pr,mk(gl.FRAGMENT_SHADER,FS));gl.linkProgram(pr);gl.useProgram(pr);
@@ -160,10 +174,10 @@ const upload=src=>gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE
 function renderGL(w,h,mir){
   const F=FILMS[S.f];gc.width=w;gc.height=h;gl.viewport(0,0,w,h);
   gl.uniform2f(u('res'),w,h);gl.uniform2f(u('lp'),S.lp[0],S.lp[1]);
-  for(const k of ['ex','con','sat','temp','tnt','split','vig','ca','bloom','bw'])gl.uniform1f(u(k),F[k]);
+  for(const k of ['ex','con','sat','warm','tnt','cross','roll','soft','hal','vig','ca','bw'])gl.uniform1f(u(k),F[k]);
   gl.uniform1f(u('fade'),F.fade*S.fd);gl.uniform1f(u('grain'),F.grain*S.grn);gl.uniform1f(u('leak'),F.leak*S.lk);
   gl.uniform1f(u('seed'),S.seed);gl.uniform1f(u('amt'),S.hold?0:S.amt);gl.uniform1f(u('mir'),mir?1:0);
-  gl.uniform3fv(u('sh'),F.sh);gl.uniform3fv(u('hi'),F.hi);gl.uniform3fv(u('lc'),F.lc);
+  gl.uniform3fv(u('sh'),F.sh);gl.uniform3fv(u('hi'),F.hi);gl.uniform3fv(u('lc'),F.lc);gl.uniform3fv(u('hc'),F.hc);
   gl.drawArrays(gl.TRIANGLE_STRIP,0,4);
 }
 // iw/ih: source size; draws photo + frame + date onto cv
@@ -260,7 +274,7 @@ function leakPos(){const o=[[.95,.1],[.05,.9],[1,.5],[0,.3],[.9,.95],[.2,0]];ret
 function flash(){const f=$('#flash');f.classList.remove('on');void f.offsetWidth;f.classList.add('on')}
 let tt;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),2600)}
 window.graoToast=toast;
-const swatch=F=>{const r=a=>`rgb(${a.map(v=>Math.round(Math.min(1,v*1.6)*255)).join(',')})`;return F.bw?'linear-gradient(135deg,#eee,#111)':`linear-gradient(135deg,${r(F.hi)},${r(F.lc.map(v=>v*.6))} 55%,${r(F.sh.map(v=>v*.7))})`};
+const swatch=F=>`linear-gradient(135deg,${F.sw[0]},${F.sw[1]} 55%,${F.sw[2]})`;
 $('#roll').innerHTML=FILMS.map((F,i)=>`<button class="film" data-i="${i}"><span class="sw" style="background:${swatch(F)}"></span><b>${F.n}</b><small>ISO ${F.iso}</small></button>`).join('');
 const FR=[['none','Nenhuma','linear-gradient(180deg,#9fd3e6,#3d97a8 55%,#d9b98a)'],['polaroid','Instantânea','linear-gradient(180deg,#9fd3e6,#3d97a8 55%,#d9b98a) 6px 6px/calc(100% - 12px) 42px no-repeat,#f3efe6'],['film','Negativo','linear-gradient(180deg,#9fd3e6,#3d97a8 55%,#d9b98a) 4px 12px/calc(100% - 8px) 40px no-repeat,#120d0a']];
 $('#frames').innerHTML=FR.map(f=>`<button data-f="${f[0]}"><span style="background:${f[2]}"></span>${f[1]}</button>`).join('');
