@@ -64,7 +64,8 @@ jobs:
           V=1.0.${{ github.run_number }}
           mkdir out
           cp "$PROJ/app/build/outputs/apk/release/app-release.apk" "out/grao-$V.apk"
-          NOTES="${MSG:-Melhorias e correções}"
+          NOTES=$(printf '%s\n' "$MSG" | grep -v -E '^(Co-Authored-By|Claude-Session|Signed-off-by):' | sed -e '/^[[:space:]]*$/d')
+          NOTES="${NOTES:-Melhorias e correções}"
           jq -n --argjson code ${{ github.run_number }} --arg name "$V" \
             --arg url "https://github.com/${{ github.repository }}/releases/download/v$V/grao-$V.apk" \
             --arg notes "$NOTES" \
