@@ -38,9 +38,12 @@ jobs:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
         run: |
           if [ -z "$KEYSTORE_BASE64" ]; then
-            echo "::error::Falta o segredo KEYSTORE_BASE64 (veja o LEIA-ME)."; exit 1
+            echo "::warning::Sem os segredos da chave: só testa a compilação, sem publicar (veja o LEIA-ME)."
+            echo "SIGN=0" >> $GITHUB_ENV
+          else
+            echo "$KEYSTORE_BASE64" | base64 -d > "$PROJ/app/grao.jks"
+            echo "SIGN=1" >> $GITHUB_ENV
           fi
-          echo "$KEYSTORE_BASE64" | base64 -d > "$PROJ/app/grao.jks"
 
       - name: Compilar
         env:
@@ -54,6 +57,7 @@ jobs:
             -PupdateUrl=https://github.com/${{ github.repository }}/releases/latest/download/versao.json
 
       - name: Montar a versão
+        if: env.SIGN == '1'
         env:
           MSG: ${{ github.event.head_commit.message }}
         run: |
@@ -69,6 +73,7 @@ jobs:
           echo "NOTES<<EOF" >> $GITHUB_ENV; echo "$NOTES" >> $GITHUB_ENV; echo "EOF" >> $GITHUB_ENV
 
       - name: Publicar (o app instalado detecta esta versão)
+        if: env.SIGN == '1'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ env.V }}
